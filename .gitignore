@@ -1,0 +1,69 @@
+# Arduino IDE files
+*.ino.bak
+*.ino.orig
+
+# Compiled Object files
+*.o
+*.obj
+
+# Libraries
+libraries/
+
+# Build files
+build/
+*.hex
+*.elf
+*.map
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Log files
+*.log
+
+# Media files (large files should be stored elsewhere)
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Backup files
+*.backup
+*.bak
+
+# Documentation build files
+docs/_build/
+docs/.doctrees/
+
+# Python cache (if using Python scripts)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node.js (if using web interface)
+node_modules/
+npm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
