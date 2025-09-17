@@ -22,15 +22,13 @@
 - [ ] Arduino Uno/Nano
 - [ ] L298N Motor Driver Module
 - [ ] HC-05 Bluetooth Module
-- [ ] 2x 18650 Li-ion batteries
-- [ ] Battery holder (2S configuration)
-- [ ] 2x DC geared motors
+- [ ] 2-3x 18650 Li-ion batteries
+- [ ] Battery holder (2/3 S configuration)
+- [ ] 4x DC geared motors
 - [ ] Chassis material (acrylic/aluminum)
 - [ ] Jumper wires
 - [ ] Mounting screws and standoffs
 - [ ] Power switch (SPST)
-- [ ] LED indicator
-- [ ] 220Ω resistor
 
 ## 🔧 Step-by-Step Assembly
 
