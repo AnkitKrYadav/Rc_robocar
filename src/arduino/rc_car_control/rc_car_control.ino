@@ -20,7 +20,7 @@ void setup() {
   pinMode(8, OUTPUT);        // Right motors reverse pin
   pinMode(9,OUTPUT);         //Horn +
   pinMode(10, OUTPUT);       //Horn -
-  digitalWrite(10, LOW); //Remains always low (horn negative).
+  digitalWrite(10, LOW);     //Remains always low (horn negative).
   Serial.begin(9600);
 }
 
@@ -28,43 +28,41 @@ void setup() {
 void loop() {
   if (Serial.available()) {
     t = Serial.read();
-    Serial.println(t); //For debugging on serial monitor.
+    Serial.println(t); //For debugging (serial monitor).
 
     // Act only if the current command is different from the previous one.
     if (t != previousCommand) {
       previousCommand = t;  // Update the last command.
 
-      // Reset all motors first, to avoid overlapping movement commands.
+      //Reset all motors first, to avoid overlapping movement commands.
       digitalWrite(2, LOW);
       digitalWrite(4, LOW);
       digitalWrite(7, LOW);
       digitalWrite(8, LOW);
 
-      if (t == 'F') {        // Move forward.
+      if (t == 'F') {       // Move forward.
         digitalWrite(2, HIGH);
         digitalWrite(7, HIGH);
       } 
-      else if (t == 'B') {   // Move reverse.
+      else if (t == 'B') {  // Move reverse.
         digitalWrite(4, HIGH);
         digitalWrite(8, HIGH);
       }
-      else if (t == 'I'){
-
+      else if (t == 'I'){   // Move Forward-Right
+        digitalWrite(2,HIGH);
       }
-      else if (t == 'G'){
-
+      else if (t == 'G'){   // Move Forward-Left
+        digitalWrite(7,HIGH);
       }
-      else if (t == 'J'){
-
+      else if (t == 'J'){   // Move Backward-Right
+        digitalWrite(4,HIGH);
       }
-      else if (t == 'H'){
-
+      else if (t == 'H'){   // Move Backward-Left
+        digitalWrite(8,HIGH);
       }
-      
       else if (t == 'L') {   // Spin Left.
         digitalWrite(7, HIGH);
         digitalWrite(4,HIGH);
-                
       }
       else if (t == 'R') {   // Spin Right.
         digitalWrite(2, HIGH);
@@ -76,7 +74,7 @@ void loop() {
       else if (t == 'v') {   // Horn Off.
         digitalWrite(9, LOW);
       }
-      // The stop condition is not needed since the motors are reset to LOW by default.
+      // 's' = Nothing Pressed -> all LOW already.
     }
   } 
 }
