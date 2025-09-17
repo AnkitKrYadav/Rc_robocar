@@ -1,81 +1,82 @@
-/*
- * RC Robocar Control System
- * 
- * This Arduino sketch controls an RC car for robowar competitions using:
- * - Arduino Uno/Nano
- * - L298N Motor Driver
- * - HC-05 Bluetooth Module
- * - 18650 Battery Pack
- * 
- * Author: Ankit Kumar Yadav
- * Project: Robowar RC Car
- * Version: 1.0
- */
+/****************************************************************
+Arduino Baud rate: 9600. Works for "Bluetooth RC Controller" app.
+App transmission Codes: L(Left), R(Right), F(Forward), B(Backward), I(Forward right), G (Forward left), J(Backward right), H(Backward left),
+V(Horn On), v(Horn off), s(Nothing Pressed).
 
-char t;
-char previousCommand = ' ';  // Store the last command
+Author: Ankit Kumar Yadav (INDIA)
+Date: 16th SEP 2024.
+*****************************************************************/
 
-void setup() {
-  pinMode(2, OUTPUT);   // Left motors forward
-  pinMode(4, OUTPUT);   // Left motors reverse
-  pinMode(7, OUTPUT);   // Right motors forward
-  pinMode(8, OUTPUT);   // Right motors reverse
-  pinMode(9,OUTPUT);
-  //horn+
-  pinMode(10, OUTPUT);
-  //horn-
-  digitalWrite(10, LOW);
-  //always low, horn negative.
+
+/********************** CODE STARTS: ***********************/
+char t;                      // Stores current command.
+char previousCommand = ' ';  // Stores last command.
+
+//One time setup.         
+void setup() {                
+  pinMode(2, OUTPUT);        // Left motors forward pin (Set it high to execute left motors forward movement).
+  pinMode(4, OUTPUT);        // Left motors reverse pin
+  pinMode(7, OUTPUT);        // Right motors forward pin
+  pinMode(8, OUTPUT);        // Right motors reverse pin
+  pinMode(9,OUTPUT);         //Horn +
+  pinMode(10, OUTPUT);       //Horn -
+  digitalWrite(10, LOW); //Remains always low (horn negative).
   Serial.begin(9600);
 }
 
+//Runs in loop repeatedly.
 void loop() {
   if (Serial.available()) {
     t = Serial.read();
-    Serial.println(t);
+    Serial.println(t); //For debugging on serial monitor.
 
-    // Only act if the current command is different from the previous one
+    // Act only if the current command is different from the previous one.
     if (t != previousCommand) {
-      previousCommand = t;  // Update the last command
+      previousCommand = t;  // Update the last command.
 
-      // Reset all motors first to avoid overlapping movement commands
+      // Reset all motors first, to avoid overlapping movement commands.
       digitalWrite(2, LOW);
       digitalWrite(4, LOW);
       digitalWrite(7, LOW);
       digitalWrite(8, LOW);
-      
-      
 
-      if (t == 'F') {        // Move forward
+      if (t == 'F') {        // Move forward.
         digitalWrite(2, HIGH);
         digitalWrite(7, HIGH);
       } 
-      else if (t == 'B') {   // Move reverse
+      else if (t == 'B') {   // Move reverse.
         digitalWrite(4, HIGH);
         digitalWrite(8, HIGH);
       }
-      else if (t == 'L') {   // Turn right
+      else if (t == 'I'){
+
+      }
+      else if (t == 'G'){
+
+      }
+      else if (t == 'J'){
+
+      }
+      else if (t == 'H'){
+
+      }
+      
+      else if (t == 'L') {   // Spin Left.
         digitalWrite(7, HIGH);
         digitalWrite(4,HIGH);
                 
       }
-      else if (t == 'R') {   // Turn left
+      else if (t == 'R') {   // Spin Right.
         digitalWrite(2, HIGH);
         digitalWrite(8,HIGH);
       }
-      else if (t == 'V') {   // Turn left
+      else if (t == 'V') {   // Horn On.
         digitalWrite(9, HIGH);
       }
-      else if (t == 'v') {   // Turn left
+      else if (t == 'v') {   // Horn Off.
         digitalWrite(9, LOW);
       }
-      // The stop command is not needed since the motors are reset to LOW
+      // The stop condition is not needed since the motors are reset to LOW by default.
     }
   } 
- // else {
-    // If no serial command is available, stop all motors
-  //  digitalWrite(2, LOW);
-  //  digitalWrite(4, LOW);
-  // digitalWrite(7, LOW);
- // //  digitalWrite(8, LOW);
 }
