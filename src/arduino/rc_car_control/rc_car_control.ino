@@ -8,146 +8,74 @@
  * - 18650 Battery Pack
  * 
  * Author: Ankit Kumar Yadav
- * Project: University Robowar RC Car
+ * Project: Robowar RC Car
  * Version: 1.0
  */
 
-// Pin definitions for L298N Motor Driver
-const int motor1Pin1 = 2;  // Motor A direction pin 1
-const int motor1Pin2 = 3;  // Motor A direction pin 2
-const int motor2Pin1 = 4;  // Motor B direction pin 1
-const int motor2Pin2 = 5;  // Motor B direction pin 2
-const int enableA = 9;     // Motor A speed control (PWM)
-const int enableB = 10;    // Motor B speed control (PWM)
-
-// LED indicator
-const int ledPin = 13;
-
-// Motor speed (0-255)
-int motorSpeed = 200;
-
-// HC-05 Bluetooth communication
-String command = "";
+char t;
+char previousCommand = ' ';  // Store the last command
 
 void setup() {
-  // Initialize serial communication for HC-05
+  pinMode(2, OUTPUT);   // Left motors forward
+  pinMode(4, OUTPUT);   // Left motors reverse
+  pinMode(7, OUTPUT);   // Right motors forward
+  pinMode(8, OUTPUT);   // Right motors reverse
+  pinMode(9,OUTPUT);
+  //horn+
+  pinMode(10, OUTPUT);
+  //horn-
+  digitalWrite(10, LOW);
+  //always low, horn negative.
   Serial.begin(9600);
-  
-  // Set motor control pins as outputs
-  pinMode(motor1Pin1, OUTPUT);
-  pinMode(motor1Pin2, OUTPUT);
-  pinMode(motor2Pin1, OUTPUT);
-  pinMode(motor2Pin2, OUTPUT);
-  pinMode(enableA, OUTPUT);
-  pinMode(enableB, OUTPUT);
-  
-  // Set LED pin as output
-  pinMode(ledPin, OUTPUT);
-  
-  // Initialize motors to stop
-  stopMotors();
-  
-  // Blink LED to indicate ready
-  for(int i = 0; i < 3; i++) {
-    digitalWrite(ledPin, HIGH);
-    delay(200);
-    digitalWrite(ledPin, LOW);
-    delay(200);
-  }
-  
-  Serial.println("RC Robocar initialized and ready!");
 }
 
 void loop() {
-  // Check for Bluetooth commands
   if (Serial.available()) {
-    command = Serial.readString();
-    command.trim();
-    
-    // Process commands
-    if (command == "F" || command == "FORWARD") {
-      moveForward();
-      Serial.println("Moving Forward");
-    }
-    else if (command == "B" || command == "BACKWARD") {
-      moveBackward();
-      Serial.println("Moving Backward");
-    }
-    else if (command == "L" || command == "LEFT") {
-      turnLeft();
-      Serial.println("Turning Left");
-    }
-    else if (command == "R" || command == "RIGHT") {
-      turnRight();
-      Serial.println("Turning Right");
-    }
-    else if (command == "S" || command == "STOP") {
-      stopMotors();
-      Serial.println("Stopped");
-    }
-    else if (command.startsWith("SPEED")) {
-      // Format: SPEED150 (sets speed to 150)
-      int newSpeed = command.substring(5).toInt();
-      if (newSpeed >= 0 && newSpeed <= 255) {
-        motorSpeed = newSpeed;
-        Serial.println("Speed set to: " + String(motorSpeed));
+    t = Serial.read();
+    Serial.println(t);
+
+    // Only act if the current command is different from the previous one
+    if (t != previousCommand) {
+      previousCommand = t;  // Update the last command
+
+      // Reset all motors first to avoid overlapping movement commands
+      digitalWrite(2, LOW);
+      digitalWrite(4, LOW);
+      digitalWrite(7, LOW);
+      digitalWrite(8, LOW);
+      
+      
+
+      if (t == 'F') {        // Move forward
+        digitalWrite(2, HIGH);
+        digitalWrite(7, HIGH);
+      } 
+      else if (t == 'B') {   // Move reverse
+        digitalWrite(4, HIGH);
+        digitalWrite(8, HIGH);
       }
+      else if (t == 'L') {   // Turn right
+        digitalWrite(7, HIGH);
+        digitalWrite(4,HIGH);
+                
+      }
+      else if (t == 'R') {   // Turn left
+        digitalWrite(2, HIGH);
+        digitalWrite(8,HIGH);
+      }
+      else if (t == 'V') {   // Turn left
+        digitalWrite(9, HIGH);
+      }
+      else if (t == 'v') {   // Turn left
+        digitalWrite(9, LOW);
+      }
+      // The stop command is not needed since the motors are reset to LOW
     }
-    else {
-      Serial.println("Invalid command: " + command);
-    }
-    
-    // Clear command
-    command = "";
-  }
-}
-
-void moveForward() {
-  digitalWrite(motor1Pin1, HIGH);
-  digitalWrite(motor1Pin2, LOW);
-  digitalWrite(motor2Pin1, HIGH);
-  digitalWrite(motor2Pin2, LOW);
-  analogWrite(enableA, motorSpeed);
-  analogWrite(enableB, motorSpeed);
-  digitalWrite(ledPin, HIGH);
-}
-
-void moveBackward() {
-  digitalWrite(motor1Pin1, LOW);
-  digitalWrite(motor1Pin2, HIGH);
-  digitalWrite(motor2Pin1, LOW);
-  digitalWrite(motor2Pin2, HIGH);
-  analogWrite(enableA, motorSpeed);
-  analogWrite(enableB, motorSpeed);
-  digitalWrite(ledPin, HIGH);
-}
-
-void turnLeft() {
-  digitalWrite(motor1Pin1, LOW);
-  digitalWrite(motor1Pin2, HIGH);
-  digitalWrite(motor2Pin1, HIGH);
-  digitalWrite(motor2Pin2, LOW);
-  analogWrite(enableA, motorSpeed);
-  analogWrite(enableB, motorSpeed);
-  digitalWrite(ledPin, HIGH);
-}
-
-void turnRight() {
-  digitalWrite(motor1Pin1, HIGH);
-  digitalWrite(motor1Pin2, LOW);
-  digitalWrite(motor2Pin1, LOW);
-  digitalWrite(motor2Pin2, HIGH);
-  analogWrite(enableA, motorSpeed);
-  analogWrite(enableB, motorSpeed);
-  digitalWrite(ledPin, HIGH);
-}
-
-void stopMotors() {
-  digitalWrite(motor1Pin1, LOW);
-  digitalWrite(motor1Pin2, LOW);
-  digitalWrite(motor2Pin1, LOW);
-  digitalWrite(motor2Pin2, LOW);
-  analogWrite(enableA, 0);
-  analogWrite(enableB, 0);
-  digitalWrite(ledPin, LOW);
+  } 
+ // else {
+    // If no serial command is available, stop all motors
+  //  digitalWrite(2, LOW);
+  //  digitalWrite(4, LOW);
+  // digitalWrite(7, LOW);
+ // //  digitalWrite(8, LOW);
 }
